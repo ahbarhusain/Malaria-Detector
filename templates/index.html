@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Malaria Detector</title>
+      <link rel="icon" type="image/x-icon" href="../static/icon.png">
+        <link href="../static/css/main.css" rel="stylesheet" />
+        <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+        <script src="https://code.iconify.design/iconify-icon/1.0.2/iconify-icon.min.js"></script>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+            crossorigin="anonymous"
+        />
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+            crossorigin="anonymous"
+        ></script>
+    </head>
+    <body>
+        <nav id="bruhlyf" class="bruh">
+            <div class="bruh-text">
+                <a class="grad">
+                    <div class="logo-container grad">
+                        <iconify-icon
+                            class=""
+                            icon="fluent-emoji-high-contrast:mosquito"
+                            width="50"
+                            height="50"
+                            flip="horizontal"
+                        ></iconify-icon>
+                        <span class="mr-2">Malaria Detector</span>
+                    </div></a
+                >
+            </div>
+            <a href="#test"
+                ><button class="btn jump-to-test">Test Samples</button></a
+            >
+        </nav>
+        <div class="spaced"></div>
+        <div class="intro mb-5">
+            <h1 class="display-2">Malaria Detector</h1>
+            <hr />
+            <p class="to-be-centerd">
+                A quick, easy and accurate way to detect malaria in RBCs.
+            </p>
+            <div class="infos mb-5">
+                <div class="infos-key">
+                  <h3>Key Features</h3>
+                    <ul>
+                        <li>1. Easy to Use</li>
+                        <li>2. Accuracy of 95% +</li>
+                        <li>3. Quick Response</li>
+                        <li>4. Test Multiple RBCs at once</li>
+                    </ul>
+                </div>
+                <div class="infos-adv">
+                  <h3>Advantages</h3>
+
+                    <ul>
+                        <li>1. Early Detection</li>
+                        <li>2. Increased Efficiency</li>
+                        <li>3. Improved Accuracy</li>
+                        <li>4. Data Collection</li>
+                        <li>5. Cost Savings</li>
+                        <li>6. Afforadable</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tek-stak mt-5 mb-5">
+                <h1>Tech Stack</h1>
+                <p>
+                    Front-end : HTML, CSS, Javascript, Bootstrap
+                </p>
+                <p>Back-end : Flask</p>
+                <p>AI/ML Model : Tensorflow, Keras CNN</p>
+            </div>
+        </div>
+        <hr />
+
+        <div id="test" class="mosquito">
+            <h1 class="display-4 ml-5">Test Samples</h1>
+            <lottie-player
+                class=""
+                src="https://assets8.lottiefiles.com/packages/lf20_trge7v5t.json"
+                background="transparent"
+                speed="1"
+                style="width: 300px; height: 300px"
+                loop
+                autoplay
+            ></lottie-player>
+        </div>
+        <form class="mt-5" id="form">
+            <input
+                class="form-control to-be-centerd mt-3 mb-5"
+                type="file"
+                name="folder"
+                accept=".png, .jpg, .jpeg"
+                multiple
+            />
+            <button class="btn btn-primary mb-5" type="submit">Predict</button>
+        </form>
+        <div class="image-preview mb-5"></div>
+        <div class="to-be-centerd mb-5" id="result">
+            <!-- Display the result here -->
+        </div>
+        <a href="#bruhlyf"
+            ><lottie-player
+                class="up-arrow"
+                src="https://assets4.lottiefiles.com/packages/lf20_ddbwlkke.json"
+                background="transparent"
+                speed="1"
+                style="width: 70px; height: 70px"
+                loop
+                autoplay
+            ></lottie-player
+        ></a>
+
+        <footer class="mt-5">
+            <div class="footer-text text-white">
+                Made with <3 by Team BruhLyf.
+            </div>
+        </footer>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $("#form").submit(function (e) {
+                    e.preventDefault();
+                    var formData = new FormData(this);
+                    $(".image-preview").html("");
+                    var files = $("input[name='folder']")[0].files;
+                    for (var i = 0; i < files.length; i++) {
+                        var reader = new FileReader();
+                        reader.onload = (function (file) {
+                            return function (e) {
+                                var img = document.createElement("img");
+                                img.src = e.target.result;
+                                $(".image-preview").append(img);
+                            };
+                        })(files[i]);
+                        reader.readAsDataURL(files[i]);
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: "/predict",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                          var perc = 
+                          (data[0]/(data[0]+data[1]))*100
+                            $("#result").html(
+                                "Infected: " +
+                                    data[0] +
+                                    "\t | Uninfected: " +
+                                    data[1] +
+                                    "\t | Percentage Infected: " +
+                                    perc +"%"
+                            );
+                        },
+                        error: function (error) {
+                            console.log(error);
+                        },
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>
